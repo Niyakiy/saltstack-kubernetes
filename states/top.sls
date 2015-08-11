@@ -6,3 +6,7 @@ base:
   'G@roles:kube-master or G@roles:kube-node':
     - match: compound
     - kube-common
+
+  'roles:kube-master':
+    - match: grain
+    - kube-master

@@ -1,0 +1,34 @@
+###
+# kubernetes system config
+#
+# The following values are used to configure the kube-apiserver
+#
+
+# The address on the local server to listen to.
+KUBE_API_ADDRESS="--address={{salt['grains.get']('fqdn_ip4', ['127.0.0.1'])[0]}}"
+
+# The port on the local server to listen on.
+KUBE_API_PORT="--port={{salt['pillar.get']('kube-master:apiserver_port', '8080')}}"
+
+# Port minions listen on
+# KUBELET_PORT="--kubelet_port=10250"
+
+# Comma separated list of nodes in the etcd cluster
+KUBE_ETCD_SERVERS="--etcd_servers=
+{%- for server, fqdn_data in salt['mine.get']('G@roles:etcd-server', 'grains.item', expr_form='compound').items() -%}
+{%- if not loop.last -%}
+http://{{fqdn_data['fqdn_ip4'][0]}}:2379,
+{%- else -%}
+http://{{fqdn_data['fqdn_ip4'][0]}}:2379"
+{%- endif -%}
+{%- endfor %}
+
+# Address range to use for services
+KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=10.254.0.0/16"
+
+# default admission control policies
+#KUBE_ADMISSION_CONTROL="--admission_control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota"
+KUBE_ADMISSION_CONTROL="--admission_control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ResourceQuota"
+
+# Add your own!
+KUBE_API_ARGS=""

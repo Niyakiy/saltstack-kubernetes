@@ -11,10 +11,20 @@ kube-repo:
   {% endif %}
 
 ##
+## Kube Config dir
+##
+kube-config-dir:
+  file.directory:
+    - name: /etc/kubernetes
+    - user: root
+    - group: root
+    - makedirs: True
+
+##
 ## Hosts file (/etc/hosts) records namaged with help of salt.module.mine
 ##
 {% for server, fqdn_data in salt['mine.get']('G@roles:kube-master or G@roles:kube-node', 'grains.item', expr_form='compound').items() %}
-cluster-host-{{server}}:
+kube-host-{{server}}:
   host.present:
     - names:
       - {{fqdn_data['fqdn']}}
