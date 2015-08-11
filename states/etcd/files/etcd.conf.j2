@@ -1,0 +1,11 @@
+ETCD_NAME="{{salt['grains.get']('fqdn', 'defualt')+'_etcd_node'}}"
+ETCD_DATA_DIR="/var/lib/etcd/"
+
+ETCD_LISTEN_CLIENT_URLS="http://127.0.0.1:2379,http://127.0.0.1:4001,http://{{salt['grains.get']('fqdn_ip4', ['127.0.0.1'])[0]}}:2379,http://{{salt['grains.get']('fqdn_ip4', ['127.0.0.1'])[0]}}:4001"
+ETCD_LISTEN_PEER_URLS="http://127.0.0.1:2380,http://127.0.0.1:7001,http://{{salt['grains.get']('fqdn_ip4', ['127.0.0.1'])[0]}}:2380,http://{{salt['grains.get']('fqdn_ip4', ['127.0.0.1'])[0]}}:7001"
+
+ETCD_ADVERTISE_CLIENT_URLS="http://{{salt['grains.get']('fqdn_ip4', ['127.0.0.1'])[0]}}:2379,http://{{salt['grains.get']('fqdn_ip4', ['127.0.0.1'])[0]}}:4001"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://{{salt['grains.get']('fqdn_ip4', ['127.0.0.1'])[0]}}:2380,http://{{salt['grains.get']('fqdn_ip4', ['127.0.0.1'])[0]}}:7001"
+
+ETCD_DISCOVERY="{{salt['pillar.get']('etcd_public_discovery', '')}}"
+
