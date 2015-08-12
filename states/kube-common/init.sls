@@ -21,6 +21,17 @@ kube-config-dir:
     - makedirs: True
 
 ##
+## Kube Common config file
+##
+kube-common-config:
+  file.managed:
+    - name: /etc/kubernetes/config
+    - template: jinja
+    - source: salt://kube-common/files/config.j2
+    - require:
+      - file: kube-config-dir
+
+##
 ## Hosts file (/etc/hosts) records namaged with help of salt.module.mine
 ##
 {% for server, fqdn_data in salt['mine.get']('G@roles:kube-master or G@roles:kube-node', 'grains.item', expr_form='compound').items() %}

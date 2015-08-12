@@ -1,0 +1,24 @@
+###
+# kubernetes kubelet (minion) config
+
+# The address for the info server to serve on (set to 0.0.0.0 or "" for all interfaces)
+KUBELET_ADDRESS="--address={{salt['grains.get']('fqdn_ip4', ['127.0.0.1'])[0]}}"
+
+# The port for the info server to serve on
+KUBELET_PORT="--port=10250"
+
+# You may leave this blank to use the actual hostname
+KUBELET_HOSTNAME=""
+
+# location of the api-server
+KUBELET_API_SERVER="--api_servers=
+{%- for server, fqdn_data in salt['mine.get']('G@roles:kube-master', 'grains.item', expr_form='compound').items() -%}
+{%- if not loop.last -%}
+http://{{fqdn_data['fqdn_ip4'][0]}}:{{salt['pillar.get']('kube-master:apiserver_port', '8080')}},
+{%- else -%}
+http://{{fqdn_data['fqdn_ip4'][0]}}:{{salt['pillar.get']('kube-master:apiserver_port', '8080')}}"
+{%- endif -%}
+{%- endfor %}
+
+# Add your own!
+KUBELET_ARGS=""

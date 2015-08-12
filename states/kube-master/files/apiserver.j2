@@ -24,11 +24,17 @@ http://{{fqdn_data['fqdn_ip4'][0]}}:2379"
 {%- endfor %}
 
 # Address range to use for services
-KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=10.254.0.0/16"
+KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range={{salt['pillar.get']('kube-master:cluster_internal_net', '10.254.0.0/16')}}"
 
 # default admission control policies
-#KUBE_ADMISSION_CONTROL="--admission_control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota"
-KUBE_ADMISSION_CONTROL="--admission_control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ResourceQuota"
+KUBE_ADMISSION_CONTROL="--admission_control=
+{%- for adm_contoller in salt['pillar.get']('kube-master:admission_controls', ['NamespaceExists','SecurityContextDeny']) -%}
+{%- if not loop.last -%}
+{{adm_contoller}},
+{%- else -%}
+{{adm_contoller}}"
+{%- endif -%}
+{%- endfor %}
 
 # Add your own!
 KUBE_API_ARGS=""
